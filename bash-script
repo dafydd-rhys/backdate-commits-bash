@@ -1,0 +1,24 @@
+#!/bin/bash
+
+DATES=(
+  "2026-01-06T12:00:00"
+  "2026-03-17T12:00:00"
+)
+
+LAST_INDEX=$(( ${#DATES[@]} - 1 ))
+
+for i in "${!DATES[@]}"; do
+  DATE="${DATES[$i]}"
+  if [ "$i" -eq "$LAST_INDEX" ]; then
+    git rm activity.txt
+    GIT_AUTHOR_DATE="$DATE" GIT_COMMITTER_DATE="$DATE" \
+      git commit -m "Cleanup: $DATE"
+  else
+    echo "Commit on $DATE" >> activity.txt
+    git add activity.txt
+    GIT_AUTHOR_DATE="$DATE" GIT_COMMITTER_DATE="$DATE" \
+      git commit -m "Update: $DATE"
+  fi
+done
+
+git push origin main
